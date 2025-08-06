@@ -19,7 +19,13 @@ type Sessions = Arc<Mutex<HashMap<String, UserSession>>>;
 
 fn main() {
     let sessions: Sessions = Arc::new(Mutex::new(HashMap::new()));
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    // Use 0.0.0.0:8080 on Fly.io, otherwise use 127.0.0.1:7878
+    let bind_addr = if std::env::var("FLY_APP_NAME").is_ok() {
+        "0.0.0.0:8080"
+    } else {
+        "127.0.0.1:7878"
+    };
+    let listener = TcpListener::bind(bind_addr).unwrap();
     
     for stream in listener.incoming() {
         let stream = stream.unwrap();
