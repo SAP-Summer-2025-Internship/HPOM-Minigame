@@ -17,4 +17,6 @@ RUN cargo build --release --bin hpom_minigame
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 COPY --from=builder /app/target/release/hpom_minigame /usr/local/bin
+COPY --from=builder /app/*.html /app/
+COPY --from=builder /app/lib /app/lib
 ENTRYPOINT ["/usr/local/bin/hpom_minigame"]
