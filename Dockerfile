@@ -11,10 +11,10 @@ COPY --from=planner /app/recipe.json recipe.json
 RUN cargo chef cook --release --recipe-path recipe.json
 # Build application
 COPY . .
-RUN cargo build --release --bin rustdoc_final
+RUN cargo build --release --bin hpom_minigame
 
 # We do not need the Rust toolchain to run the binary!
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
-COPY --from=builder /app/target/release/rustdoc_final /usr/local/bin
-ENTRYPOINT ["/usr/local/bin/rustdoc_final"]
+COPY --from=builder /app/target/release/hpom_minigame /usr/local/bin
+ENTRYPOINT ["/usr/local/bin/hpom_minigame"]
