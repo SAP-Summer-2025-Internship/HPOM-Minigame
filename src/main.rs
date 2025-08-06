@@ -23,13 +23,16 @@ fn handle_connection(mut stream: TcpStream) {
     let request_line = buf_reader.lines().next().unwrap().unwrap();
 
     let (status_line, filename) = match &request_line[..] {
-        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "hello.html"),
-        "GET /sleep HTTP/1.1" => {
-            println!("Sleep request started at {:?}", std::time::Instant::now());
-            thread::sleep(Duration::from_secs(5));
-            println!("Sleep request finished at {:?}", std::time::Instant::now());
-            ("HTTP/1.1 200 OK", "hello.html")
-        }
+        "GET / HTTP/1.1" => ("HTTP/1.1 200 OK", "page1.html"),
+        "GET /page1 HTTP/1.1" => ("HTTP/1.1 200 OK", "page1.html"),
+        "GET /page2 HTTP/1.1" => ("HTTP/1.1 200 OK", "page2.html"),
+        "GET /page3 HTTP/1.1" => ("HTTP/1.1 200 OK", "page3.html"),
+        "GET /page4 HTTP/1.1" => ("HTTP/1.1 200 OK", "page4.html"),
+        "GET /page5 HTTP/1.1" => ("HTTP/1.1 200 OK", "page5.html"),
+        "GET /page6 HTTP/1.1" => ("HTTP/1.1 200 OK", "page6.html"),
+        "GET /page7 HTTP/1.1" => ("HTTP/1.1 200 OK", "page7.html"),
+        "GET /page8 HTTP/1.1" => ("HTTP/1.1 200 OK", "page8.html"),
+        "GET /page9 HTTP/1.1" => ("HTTP/1.1 200 OK", "page9.html"),
         _ => ("HTTP/1.1 404 NOT FOUND", "404.html"),
     };
 
