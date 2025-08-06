@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "rustdoc_final"
+name = "hpom_minigame"
 version = "0.1.0"

@@ -5,25 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page 2</title>
     <style>
+        .bigbutton-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 100px;
+        }
+        .button-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 45px;
+        }
         body {
             margin: 0;
             padding: 0;
-            background-image: url('background.jpg');
-            background-size: 1920px 1080px;
+            background-image: url('lib/2.jpg');
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
             width: 100vw;
             height: 100vh;
-            min-width: 1920px;
-            min-height: 1080px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
     </style>
+    <div class="bigbutton-row" style="margin-top:100px;">
+        <img src="lib/2_bigbutton_pm.jpg" alt="BigButton1" class="bigbutton-img" />
+        <img src="lib/2_bigbutton_ux.jpg" alt="BigButton2" class="bigbutton-img" />
+        <img src="lib/2_bigbutton_engi.jpg" alt="BigButton3" class="bigbutton-img" />
+        <img src="lib/2_bigbutton_dm.jpg" alt="BigButton4" class="bigbutton-img" />
+    </div>
+    <div class="button-row" style="margin-top:10px;">
+        <a href="#"><img src="lib/2_button_pm.jpg" alt="Button1" class="button-img" /></a>
+        <a href="#"><img src="lib/2_button_ux.jpg" alt="Button2" class="button-img" /></a>
+        <a href="#"><img src="lib/2_button_engi.jpg" alt="Button3" class="button-img" /></a>
+        <a href="#"><img src="lib/2_button_dm.jpg" alt="Button4" class="button-img" /></a>
+    </div>
 </head>
 <body>
-    <!-- Page 2 content here -->
-</body>
-</html>

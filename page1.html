@@ -8,18 +8,17 @@
         body {
             margin: 0;
             padding: 0;
-            background-image: url('background.jpg');
-            background-size: 1920px 1080px;
+            background-image: url('lib/1.jpg');
+            background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
             width: 100vw;
             height: 100vh;
-            min-width: 1920px;
-            min-height: 1080px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
         .nav-button {
             padding: 20px 40px;
@@ -37,6 +36,8 @@
     </style>
 </head>
 <body>
-    <button class="nav-button" onclick="location.href='/page2'">Go to Page 2</button>
+    <a href="/page2">
+        <img src="lib/1_button.jpg" alt="Button" style="display: block; margin: 130px auto 0 auto; max-width: 300px; max-height: 100px; cursor: pointer;" />
+    </a>
 </body>
 </html>
