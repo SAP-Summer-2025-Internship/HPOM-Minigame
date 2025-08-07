@@ -7,19 +7,13 @@ use std::{
     thread,
 };
 
-mod page_flow;
-use page_flow::PageFlowValidator;
-
-#[derive(Debug, Clone)]
-struct UserSession {
-    flow: PageFlowValidator,
-}
+mod user_session;
+use user_session::UserSession;
 
 type Sessions = Arc<Mutex<HashMap<String, UserSession>>>;
 
 fn main() {
     // TODO change all jpg to png
-    // TODO remove the UserSession after completing / moving to page 9.
     // TODO figure out a way to log all information, fly.io volumes?
     // TODO make sure this is compatible with mobile :D
     let sessions: Sessions = Arc::new(Mutex::new(HashMap::new()));
@@ -107,37 +101,38 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
         }
     }
     
-    let session = sessions_guard.entry(session_id.clone()).or_insert(UserSession {
-        flow: PageFlowValidator::new(),
-    });
+    let session = sessions_guard.entry(session_id.clone()).or_insert(UserSession::new());
     
     // Debug: print session info before update
     println!("[DEBUG] Session ID: {}", session_id);
-    println!("[DEBUG] Current page: {}", session.flow.current_page());
-    println!("[DEBUG] Button presses: {:?}", session.flow.button_presses());
+    println!("[DEBUG] Current page: {}", session.current_page());
+    println!("[DEBUG] Button presses: {:?}", session.button_presses());
 
     // Handle button press from query parameters
+    let mut remove_session = false;
     if let Some(query) = query {
         if let Some(button) = parse_button_press(query) {
-            println!("[DEBUG] Attempting button press: '{}' from page {}", button, session.flow.current_page());
-            
+            println!("[DEBUG] Attempting button press: '{}' from page {}", button, session.current_page());
             // Process the button press
-            match session.flow.process_button_press(&button) {
+            match session.process_button_press(&button) {
                 Ok(next_page) => {
                     println!("Session {}: Button press '{}' validated! Moving to page {}", 
                              session_id, button, next_page);
-                    println!("[DEBUG] Updated button presses: {:?}", session.flow.button_presses());
+                    println!("[DEBUG] Updated button presses: {:?}", session.button_presses());
+                    if next_page == 9 {
+                        remove_session = true;
+                    }
                 },
                 Err(error) => {
                     match error {
-                        page_flow::ValidationError::InvalidButton(btn, allowed) => {
+                        user_session::ValidationError::InvalidButton(btn, allowed) => {
                             println!("[DEBUG] VALIDATION FAILED: Button '{}' not allowed from page {}. Allowed buttons: {:?}", 
-                                     btn, session.flow.current_page(), allowed);
+                                     btn, session.current_page(), allowed);
                         },
-                        page_flow::ValidationError::NoTransitionDefined(page) => {
+                        user_session::ValidationError::NoTransitionDefined(page) => {
                             println!("[DEBUG] ERROR: No transitions defined for page {}", page);
                         },
-                        page_flow::ValidationError::InvalidPage(page) => {
+                        user_session::ValidationError::InvalidPage(page) => {
                             println!("[DEBUG] ERROR: Invalid page transition from page {}", page);
                         },
                     }
@@ -147,14 +142,24 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
         }
     }
 
-    let page_to_serve = session.flow.current_page();
-    let html = load_page_html(page_to_serve, session.flow.button_presses());
+    // Remove session if user has reached page 9
+    if remove_session {
+        let user_session = sessions_guard.remove(&session_id).unwrap();
+        let _doc_string = UserSession::to_doc_string(user_session);
+        // TODO implement docstring fly.io volume here
+        // Serve page 1 after session removal
+        let html = load_page_html(9, &[]);
+        return ("HTTP/1.1 200 OK".to_string(), html.into_bytes(), "text/html".to_string(), set_cookie);
+    }
+
+    let page_to_serve = session.current_page();
+    let html = load_page_html(page_to_serve, session.button_presses());
     
     // Debug: print all sessions after update
     println!("\n[DEBUG] All sessions after update: {{");
     for (sid, sess) in sessions_guard.iter() {
         println!("  {} => Current page: {}, Button presses: {:?}", 
-                 sid, sess.flow.current_page(), sess.flow.button_presses());
+                 sid, sess.current_page(), sess.button_presses());
     }
     println!("}}\n");
     

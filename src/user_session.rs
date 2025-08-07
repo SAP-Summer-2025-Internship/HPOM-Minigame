@@ -1,5 +1,5 @@
 #[derive(Debug, Clone)]
-pub struct PageFlowValidator {
+pub struct UserSession {
     button_presses: Vec<String>,
     current_page: usize,
 }
@@ -13,9 +13,42 @@ pub enum ValidationError {
 
 pub type ValidationResult<T> = Result<T, ValidationError>;
 
-impl PageFlowValidator {
+impl UserSession {
+    /// Consumes self and returns a pseudo-document string describing the user's flow
+    pub fn to_doc_string(self) -> String {
+        let mut doc = String::new();
+        doc.push_str("User Session Flow Summary:\n");
+        doc.push_str(&format!("Final page reached: {}\n", self.current_page));
+        if self.button_presses.is_empty() {
+            doc.push_str("No buttons were pressed.\n");
+        } else {
+            doc.push_str("Button presses in order:\n");
+            for (i, btn) in self.button_presses.iter().enumerate() {
+                doc.push_str(&format!("  {}. {}\n", i + 1, btn));
+            }
+        }
+        // Optionally, add a human-readable summary
+        doc.push_str("\nSummary:\n");
+        match self.button_presses.get(0).map(|s| s.as_str()) {
+            Some("start") => doc.push_str("- User started the flow.\n"),
+            _ => doc.push_str("- User did not start with the expected button.\n"),
+        }
+        if let Some(role) = self.button_presses.get(1) {
+            doc.push_str(&format!("- Chose role: {}\n", role));
+        }
+        if self.button_presses.contains(&"mc".to_string()) {
+            doc.push_str("- Took the multiple choice path.\n");
+        }
+        if self.button_presses.contains(&"tf".to_string()) {
+            doc.push_str("- Took the true/false path.\n");
+        }
+        if self.current_page == 9 {
+            doc.push_str("- User completed the flow and reached the final page.\n");
+        }
+        doc
+    }
     pub fn new() -> Self {
-        PageFlowValidator { 
+        Self { 
             button_presses: Vec::new(),
             current_page: 1,
         }
@@ -164,65 +197,4 @@ impl PageFlowValidator {
     pub fn button_presses(&self) -> &[String] {
         &self.button_presses
     }
-    
-    // /// Get allowed buttons for current page
-    // pub fn allowed_buttons(&self) -> ValidationResult<Vec<String>> {
-    //     match self.current_page {
-    //         1 => Ok(vec!["start".to_string()]),
-    //         2 => Ok(vec!["pm".to_string(), "ux".to_string(), "engi".to_string(), "dm".to_string()]),
-    //         3 => Ok(vec!["mc".to_string(), "tf".to_string()]),
-    //         4 => {
-    //             if self.button_presses.contains(&"mc".to_string()) {
-    //                 Ok(vec!["4a".to_string(), "4b".to_string(), "4c".to_string(), "4d".to_string()])
-    //             } else {
-    //                 Err(ValidationError::InvalidPage(4))
-    //             }
-    //         },
-    //         5 => {
-    //             if self.button_presses.contains(&"tf".to_string()) {
-    //                 Ok(vec!["5t".to_string(), "5f".to_string()])
-    //             } else {
-    //                 Err(ValidationError::InvalidPage(5))
-    //             }
-    //         },
-    //         6 => {
-    //             if self.button_presses.contains(&"mc".to_string()) {
-    //                 Ok(vec!["6a".to_string(), "6b".to_string(), "6c".to_string(), "6d".to_string()])
-    //             } else {
-    //                 Err(ValidationError::InvalidPage(6))
-    //             }
-    //         },
-    //         7 => {
-    //             if self.button_presses.contains(&"tf".to_string()) {
-    //                 Ok(vec!["7t".to_string(), "7f".to_string()])
-    //             } else {
-    //                 Err(ValidationError::InvalidPage(7))
-    //             }
-    //         },
-    //         8 => Ok(vec!["trophy".to_string()]),
-    //         9 => Ok(vec![]), // No buttons allowed on final page
-    //         _ => Err(ValidationError::NoTransitionDefined(self.current_page))
-    //     }
-    // }
-    
-    // /// Check if a button is valid for current page (without processing)
-    // pub fn is_button_valid(&self, button: &str) -> bool {
-    //     self.allowed_buttons()
-    //         .map(|buttons| buttons.contains(&button.to_string()))
-    //         .unwrap_or(false)
-    // }
-    
-    // /// Reset the flow validator to initial state
-    // pub fn reset(&mut self) {
-    //     self.button_presses.clear();
-    //     self.current_page = 1;
-    // }
-    
-    // /// Check if a page exists in the flow
-    // pub fn is_valid_page(&self, page: usize) -> bool {
-    //     match page {
-    //         1..=9 => true,
-    //         _ => false,
-    //     }
-    // }
 }
