@@ -25,11 +25,62 @@
             height: 100vh;
             min-width: 320px;
             min-height: 480px;
-            background-image: url('lib/1.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center center;
-            transition: background-image 0.3s;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-cropper {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .bg-img {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+        @media (max-width: 1000px) {
+            .bg-cropper {
+                width: 1000px;
+                height: 1080px;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                max-width: 100vw;
+                max-height: 100vh;
+            }
+            .bg-img {
+                width: 1000px;
+                height: 1080px;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                object-fit: none;
+            }
+        }
+        @media (max-width: 1000px) and (max-width: 1000px) {
+            .bg-cropper {
+                width: 100vw;
+                height: calc(100vw * 1080 / 1000);
+            }
+            .bg-img {
+                width: calc(100vw * 1920 / 1000);
+                height: calc(100vw * 1080 / 1000);
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                object-fit: contain;
+            }
         }
         .scaling-btn {
             position: absolute;
@@ -44,7 +95,10 @@
 </head>
 <body>
     <div class="bg-container">
-        <a href="/page2?button=start" style="display:block; width:100%; height:100%;">
+        <div class="bg-cropper">
+            <img src="lib/1.png" alt="Background" class="bg-img" draggable="false" />
+        </div>
+        <a href="/page2?button=start" style="display:block; position:absolute; left:0; top:0; width:100%; height:100%; z-index:1;">
             <img src="lib/1_button.jpg" alt="Button" class="scaling-btn" style="cursor:pointer;" />
         </a>
     </div>
