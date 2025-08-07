@@ -35,15 +35,22 @@
             height: 9vw;
             display: block;
         }
+        /* Hover effect for regular buttons */
+        a.mc-btn:hover > img {
+            content: url('lib/3_button_mc_hover.png');
+        }
+        a.tf-btn:hover > img {
+            content: url('lib/3_button_tf_hover.png');
+        }
     </style>
     </style>
 </head>
 <body>
     <div class="bg-container">
-        <a href="/page4?button=mc" style="display:block;">
+        <a href="/page4?button=mc" class="mc-btn" style="display:block;">
             <img src="lib/3_button_mc.jpg" alt="MC" class="scaling-btn" style="cursor:pointer; left:33%; top:43%;" />
         </a>
-        <a href="/page5?button=tf" style="display:block;">
+        <a href="/page5?button=tf" class="tf-btn" style="display:block;">
             <img src="lib/3_button_tf.jpg" alt="TF" class="scaling-btn" style="cursor:pointer; left:53%; top:43%;" />
         </a>
     </div>

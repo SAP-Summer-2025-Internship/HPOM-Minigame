@@ -35,20 +35,33 @@
             height: 4vw;
             display: block;
         }
+        /* Hover effect for regular buttons */
+        a.a-btn:hover > img {
+            content: url('lib/4a_hover.png');
+        }
+        a.b-btn:hover > img {
+            content: url('lib/4b_hover.png');
+        }
+        a.c-btn:hover > img {
+            content: url('lib/4c_hover.png');
+        }
+        a.d-btn:hover > img {
+            content: url('lib/4d_hover.png');
+        }
     </style>
 </head>
 <body>
     <div class="bg-container">
-        <a href="/page6?button=4a" style="display:block;">
+        <a href="/page6?button=4a" class="a-btn" style="display:block;">
             <img src="lib/4a.jpg" alt="4A" class="scaling-btn" style="cursor:pointer; left:35%; top:43.5%;" />
         </a>
-        <a href="/page6?button=4b" style="display:block;">
+        <a href="/page6?button=4b" class="b-btn" style="display:block;">
             <img src="lib/4b.jpg" alt="4B" class="scaling-btn" style="cursor:pointer; left:51%; top:43.5%;" />
         </a>
-        <a href="/page6?button=4c" style="display:block;">
+        <a href="/page6?button=4c" class="c-btn" style="display:block;">
             <img src="lib/4c.jpg" alt="4C" class="scaling-btn" style="cursor:pointer; left:35%; top:52%;" />
         </a>
-        <a href="/page6?button=4d" style="display:block;">
+        <a href="/page6?button=4d" class="d-btn" style="display:block;">
             <img src="lib/4d.jpg" alt="4D" class="scaling-btn" style="cursor:pointer; left:51%; top:52%;" />
         </a>
     </div>

@@ -18,6 +18,10 @@ struct UserSession {
 type Sessions = Arc<Mutex<HashMap<String, UserSession>>>;
 
 fn main() {
+    // TODO change all jpg to png
+    // TODO remove the UserSession after completing / moving to page 9.
+    // TODO figure out a way to log all information, fly.io volumes?
+    // TODO make sure this is compatible with mobile :D
     let sessions: Sessions = Arc::new(Mutex::new(HashMap::new()));
     // Use 0.0.0.0:8080 on Fly.io, otherwise use 127.0.0.1:7878
     let bind_addr = if std::env::var("FLY_APP_NAME").is_ok() {
