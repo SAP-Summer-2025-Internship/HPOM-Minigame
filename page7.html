@@ -1,24 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preload" as="image" href="lib/7.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page 7</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-image: url('lib/7.jpg');
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('lib/7.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            transition: background-image 0.3s;
+        }
+        .scaling-btn {
+            position: absolute;
+            width: 14.8vw;
+            height: 4vw;
+            display: block;
+        }
+        /* Hover effect for TRUE button */
+        a.true-btn:hover > img {
+            content: url('lib/true_hover.jpg');
+        }
+        /* Hover effect for FALSE button */
+        a.false-btn:hover > img {
+            content: url('lib/false_hover.jpg');
         }
     </style>
 </head>
+<body>
+    <div class="bg-container">
+        <a href="/page8?button=7t" class="true-btn" style="display:block;">
+            <img src="lib/true.jpg" alt="TRUE" class="scaling-btn" style="cursor:pointer; left:34%; top:48%;" />
+        </a>
+        <a href="/page8?button=7f" class="false-btn" style="display:block;">
+            <img src="lib/false.jpg" alt="FALSE" class="scaling-btn" style="cursor:pointer; left:50%; top:48%;" />
+        </a>
+    </div>
+</html>

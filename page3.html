@@ -1,41 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preload" as="image" href="lib/3.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page 3</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-image: url('lib/3.jpg');
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('lib/3.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            transition: background-image 0.3s;
         }
-        .button-row {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            gap: 40px;
-            width: 100%;
+        .scaling-btn {
+            position: absolute;
+            width: 16vw;
+            height: 9vw;
+            display: block;
         }
+    </style>
     </style>
 </head>
 <body>
-    <div class="button-row">
-        <a href="/page5?button=tf">
-            <img src="lib/3_button_tf.jpg" />
+    <div class="bg-container">
+        <a href="/page4?button=mc" style="display:block;">
+            <img src="lib/3_button_mc.jpg" alt="MC" class="scaling-btn" style="cursor:pointer; left:33%; top:43%;" />
         </a>
-        <a href="/page4?button=mc">
-            <img src="lib/3_button_mc.jpg" />
+        <a href="/page5?button=tf" style="display:block;">
+            <img src="lib/3_button_tf.jpg" alt="TF" class="scaling-btn" style="cursor:pointer; left:53%; top:43%;" />
         </a>
     </div>

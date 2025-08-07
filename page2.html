@@ -1,53 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preload" as="image" href="lib/2.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page 2</title>
     <style>
-        .bigbutton-row {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            gap: 100px;
-        }
-        .button-row {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            align-items: center;
-            gap: 45px;
-        }
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-image: url('lib/2.jpg');
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('lib/2.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            transition: background-image 0.3s;
         }
+        .scaling-btn {
+            position: absolute;
+            left: 50%;
+            top: 57%;
+            transform: translate(-50%, 0);
+            width: 30vw;
+            height: 5vw;
+            display: block;
+        }
+        /* Hover effect for regular buttons */
+        a.pm-btn:hover > img {
+            content: url('lib/button_pm_hover.png');
+        }
+        a.ux-btn:hover > img {
+            content: url('lib/button_ux_hover.png');
+        }
+        a.engi-btn:hover > img {
+            content: url('lib/button_engi_hover.png');
+        }
+        a.dm-btn:hover > img {
+            content: url('lib/button_dm_hover.png');
+        }
+    </style>
     </style>
 </head>
 <body>
-    <div class="bigbutton-row" style="margin-top:100px;">
-        <a href="/page3?button=pm"><img src="lib/2_bigbutton_pm.jpg" alt="BigButton1" class="bigbutton-img" /></a>
-        <a href="/page3?button=ux"><img src="lib/2_bigbutton_ux.jpg" alt="BigButton2" class="bigbutton-img" /></a>
-        <a href="/page3?button=engi"><img src="lib/2_bigbutton_engi.jpg" alt="BigButton3" class="bigbutton-img" /></a>
-        <a href="/page3?button=dm"><img src="lib/2_bigbutton_dm.jpg" alt="BigButton4" class="bigbutton-img" /></a>
-    </div>
-    <div class="button-row" style="margin-top:10px;">
-        <a href="/page3?button=pm"><img src="lib/2_button_pm.jpg" alt="Button1" class="button-img" /></a>
-        <a href="/page3?button=ux"><img src="lib/2_button_ux.jpg" alt="Button2" class="button-img" /></a>
-        <a href="/page3?button=engi"><img src="lib/2_button_engi.jpg" alt="Button3" class="button-img" /></a>
-        <a href="/page3?button=dm"><img src="lib/2_button_dm.jpg" alt="Button4" class="button-img" /></a>
+    <div class="bg-container">
+        <a href="/page3?button=pm" style="display:block;">
+            <img src="lib/2_bigbutton_pm.jpg" alt="BigPM" class="scaling-btn" style="cursor:pointer; left:20%; top:40%; width:12vw; height:12vw;" />
+        </a>
+        <a href="/page3?button=ux" style="display:block;">
+            <img src="lib/2_bigbutton_ux.jpg" alt="BigUX" class="scaling-btn" style="cursor:pointer; left:40%; top:40%; width:12vw; height:12vw;" />
+        </a>
+        <a href="/page3?button=engi" style="display:block;">
+            <img src="lib/2_bigbutton_engi.jpg" alt="BigENGI" class="scaling-btn" style="cursor:pointer; left:60%; top:40%; width:12vw; height:12vw;" />
+        </a>
+        <a href="/page3?button=dm" style="display:block;">
+            <img src="lib/2_bigbutton_dm.jpg" alt="BigDM" class="scaling-btn" style="cursor:pointer; left:80%; top:40%; width:12vw; height:12vw;" />
+        </a>
+        <a href="/page3?button=pm" class="pm-btn" style="display:block;">
+            <img src="lib/button_pm.jpg" alt="PM" class="scaling-btn" style="cursor:pointer; left:20%; top:65%; width:16vw; height:4vw;" />
+        </a>
+        <a href="/page3?button=ux" class="ux-btn" style="display:block;">
+            <img src="lib/button_ux.jpg" alt="UX" class="scaling-btn" style="cursor:pointer; left:40%; top:65%; width:16vw; height:4vw;" />
+        </a>
+        <a href="/page3?button=engi" class="engi-btn" style="display:block;">
+            <img src="lib/button_engi.jpg" alt="ENGI" class="scaling-btn" style="cursor:pointer; left:60%; top:65%; width:16vw; height:4vw;" />
+        </a>
+        <a href="/page3?button=dm" class="dm-btn" style="display:block;">
+            <img src="lib/button_dm.jpg" alt="DM" class="scaling-btn" style="cursor:pointer; left:80%; top:65%; width:16vw; height:4vw;" />
+        </a>
     </div>
 </body>
 </html>

@@ -1,25 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preload" as="image" href="lib/9.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page 9</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-image: url('lib/9.jpg');
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('lib/8.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            transition: background-image 0.3s;
+        }
+        .scaling-btn {
+            position: absolute;
+            width: 9vw;
+            height: 9vw;
+            display: block;
         }
     </style>
 </head>
 <body>
+    <div class="bg-container">
+        <a href="/page10?button=9a" style="display:block;">
+            <img src="lib/9_button_9a.jpg" alt="9A" class="scaling-btn" style="cursor:pointer; left:50%; top:60%;" />
+        </a>
+    </div>

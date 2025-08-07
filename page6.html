@@ -1,29 +1,69 @@
-        /* No .nav-button CSS found to remove */
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preload" as="image" href="lib/6.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page 6</title>
     <style>
-        body {
+        html, body {
+            height: 100%;
             margin: 0;
             padding: 0;
-            background-image: url('lib/6.jpg');
+        }
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('lib/6.png');
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center center;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
+            transition: background-image 0.3s;
+        }
+        .scaling-btn {
+            position: absolute;
+            width: 14.5vw;
+            height: 4vw;
+            display: block;
+        }
+        /* Hover effect for regular buttons */
+        a.pm-btn:hover > img {
+            content: url('lib/button_pm_hover.png');
+        }
+        a.ux-btn:hover > img {
+            content: url('lib/button_ux_hover.png');
+        }
+        a.engi-btn:hover > img {
+            content: url('lib/button_engi_hover.png');
+        }
+        a.dm-btn:hover > img {
+            content: url('lib/button_dm_hover.png');
         }
     </style>
 </head>
 <body>
-    <!-- Page 6 content here -->
+    <div class="bg-container">
+        <a href="/page8?button=6a" class="pm-btn" style="display:block;">
+            <img src="lib/button_pm.jpg" alt="6A" class="scaling-btn" style="cursor:pointer; left:35%; top:43.5%;" />
+        </a>
+        <a href="/page8?button=6b" class="dm-btn" style="display:block;">
+            <img src="lib/button_dm.jpg" alt="6B" class="scaling-btn" style="cursor:pointer; left:51%; top:43.5%;" />
+        </a>
+        <a href="/page8?button=6c" class="engi-btn" style="display:block;">
+            <img src="lib/button_engi.jpg" alt="6C" class="scaling-btn" style="cursor:pointer; left:35%; top:52%;" />
+        </a>
+        <a href="/page8?button=6d" class="ux-btn" style="display:block;">
+            <img src="lib/button_ux.jpg" alt="6D" class="scaling-btn" style="cursor:pointer; left:51%; top:52%;" />
+        </a>
+    </div>
 </body>
 </html>
