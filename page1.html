@@ -36,7 +36,6 @@
             height: 100vh;
             transform: translate(-50%, -50%);
             overflow: hidden;
-            pointer-events: none;
         }
         .bg-img {
             position: absolute;
@@ -103,7 +102,7 @@
     <div class="bg-container">
         <div class="bg-cropper">
             <img src="lib/1.png" alt="Background" class="bg-img" draggable="false" />
-            <a href="/page2?button=start" style="display:block; position:absolute; left:0; top:0; width:100%; height:100%; z-index:1;">
+            <a href="/page2?button=start" style="display:block; z-index:1;">
                 <img src="lib/1_button.jpg" alt="Button" class="scaling-btn" style="cursor:pointer;" />
             </a>
         </div>
