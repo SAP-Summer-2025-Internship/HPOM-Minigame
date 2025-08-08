@@ -153,7 +153,7 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
     }
 
     // Endpoint to clear the CSV data
-    if parts[1].starts_with("/clear-data") {
+    if parts[1] == "/clear-data" {
         let csv_path = "/data/data.csv";
         let result = std::fs::OpenOptions::new()
             .write(true)
@@ -168,7 +168,7 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
     }
 
     // Pretty CSV view endpoint
-    if parts[1].starts_with("/view-data") {
+    if parts[1] == "/view-data" {
         let csv_path = "/data/data.csv";
         let html = match std::fs::read_to_string(csv_path) {
             Ok(csv) => csv_to_html_table(&csv),
@@ -183,8 +183,8 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
     // Only allow /, /pageN, /view-data, /clear-data, and static files
     let allowed = parts[1] == "/"
         || parts[1].starts_with("/page")
-        || parts[1].starts_with("/view-data")
-        || parts[1].starts_with("/clear-data")
+        || parts[1] == "/view-data"
+        || parts[1] == "/clear-data"
         || parts[1].starts_with("/lib/");
     if !allowed {
         let html = std::fs::read_to_string("404.html").unwrap_or_else(|_| "<html><body><h1>404 Not Found</h1></body></html>".to_string());
