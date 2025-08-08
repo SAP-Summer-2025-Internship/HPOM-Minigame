@@ -1,4 +1,4 @@
-# fly.toml app configuration file generated for hpom-minigame on 2025-08-06T14:03:37Z
+# fly.toml app configuration file generated for hpom-minigame on 2025-08-08T08:39:31Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
@@ -7,13 +7,6 @@ app = 'hpom-minigame'
 primary_region = 'lax'
 
 [build]
-
-[env]
-  PORT = '8080'
-
-[[mounts]]
-  source = "mydata"
-  destination = "/data"
 
 [http_service]
   internal_port = 8080
