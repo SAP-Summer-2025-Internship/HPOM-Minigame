@@ -11,6 +11,10 @@ primary_region = 'lax'
 [env]
   PORT = '8080'
 
+[[mounts]]
+  source = "mydata"
+  destination = "/data"
+
 [http_service]
   internal_port = 8080
   force_https = true
