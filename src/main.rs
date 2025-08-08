@@ -201,6 +201,13 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
         }
         let doc_string = UserSession::to_doc_string(user_session.clone()).replace('\n', "\\n").replace('"', "'");
         let csv_path = "/data/data.csv";
+        println!("[DEBUG] Attempting to write to CSV at {}", csv_path);
+        if !std::path::Path::new("/data").exists() {
+            println!("[DEBUG] /data directory does not exist!");
+        } else {
+            println!("[DEBUG] /data directory exists.");
+        }
+
         let mut add_header = false;
         if !std::path::Path::new(csv_path).exists() {
             add_header = true;
@@ -209,16 +216,26 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
                 add_header = true;
             }
         }
+
         let mut file = std::fs::OpenOptions::new()
             .create(true)
             .append(true)
             .open(csv_path)
-            .unwrap();
+            .unwrap_or_else(|e| {
+                println!("[DEBUG] Failed to open {}: {}", csv_path, e);
+                panic!("[DEBUG] Could not open CSV file");
+            });
+
         if add_header {
             let header = "session_id,role,question_type,team_size,role_pref,hpom_live,richard_cai,doc_string\n";
             use std::io::Write;
-            file.write_all(header.as_bytes()).unwrap();
+            if let Err(e) = file.write_all(header.as_bytes()) {
+                println!("[DEBUG] Failed to write header to {}: {}", csv_path, e);
+            } else {
+                println!("[DEBUG] Wrote header to {}", csv_path);
+            }
         }
+        
         let row = format!(
             "{},{},{},{},{},{},{},\"{}\"\n",
             session_id,
@@ -231,7 +248,11 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
             doc_string
         );
         use std::io::Write;
-        file.write_all(row.as_bytes()).unwrap();
+        if let Err(e) = file.write_all(row.as_bytes()) {
+            println!("[DEBUG] Failed to write row to {}: {}", csv_path, e);
+        } else {
+            println!("[DEBUG] Successfully wrote row to {}", csv_path);
+        }
 
         // Serve page 1 after session removal
         let html = load_page_html(9, &[]);
