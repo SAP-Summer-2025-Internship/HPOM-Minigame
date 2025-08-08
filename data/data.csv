@@ -1,0 +1,2 @@
+session_id,role,question_type,team_size,role_pref,hpom_live,richard_cai,doc_string
+session_1754495374,Product Manager,True/False,,,False,False,"User Response Summary:\n- Role: Product Manager\n- Question type: True/False\n- Believes HPOM has been live for two years: False\n- Not intimidated by Richard Cai: False\n"

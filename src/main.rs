@@ -143,9 +143,96 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
     // Remove session if user has reached page 9
     if remove_session {
         let user_session = sessions_guard.remove(&session_id).unwrap();
-        let doc_string = UserSession::to_doc_string(user_session);
-        println!("{doc_string}");
-        // TODO implement docstring fly.io volume here
+        let bp = user_session.button_presses();
+        // Extract role, question_type, answers as in to_doc_string
+        let role = bp.get(1).map(|s| match s.as_str() {
+            "pm" => "Product Manager",
+            "ux" => "UX Designer",
+            "engi" => "Engineer",
+            "dm" => "Deveveloper Manager",
+            _ => s.as_str(),
+        }).unwrap_or("");
+        let qtype = bp.get(2).map(|s| match s.as_str() {
+            "mc" => "Multiple Choice",
+            "tf" => "True/False",
+            _ => s.as_str(),
+        }).unwrap_or("");
+        // MC answers
+        let mut team_size = "";
+        let mut role_pref = "";
+        if qtype == "Multiple Choice" {
+            if let Some(ans) = bp.get(3) {
+                team_size = match ans.as_str() {
+                    "4a" => "3-5 people",
+                    "4b" => "6-8 people",
+                    "4c" => "9-12 people",
+                    "4d" => "13-15 people",
+                    _ => "(unknown)",
+                };
+            }
+            if let Some(ans) = bp.get(4) {
+                role_pref = match ans.as_str() {
+                    "6a" => "Product Manager",
+                    "6b" => "Developer Manager",
+                    "6c" => "Engineer",
+                    "6d" => "UX Designer",
+                    _ => "(unknown)",
+                };
+            }
+        }
+        // TF answers
+        let mut hpom_live = "";
+        let mut richard_cai = "";
+        if qtype == "True/False" {
+            if let Some(ans) = bp.get(3) {
+                hpom_live = match ans.as_str() {
+                    "5t" => "True",
+                    "5f" => "False",
+                    _ => "(unknown)",
+                };
+            }
+            if let Some(ans) = bp.get(4) {
+                richard_cai = match ans.as_str() {
+                    "7t" => "True",
+                    "7f" => "False",
+                    _ => "(unknown)",
+                };
+            }
+        }
+        let doc_string = UserSession::to_doc_string(user_session.clone()).replace('\n', "\\n").replace('"', "'");
+        let csv_path = "data/data.csv";
+        let mut add_header = false;
+        if !std::path::Path::new(csv_path).exists() {
+            add_header = true;
+        } else if let Ok(metadata) = std::fs::metadata(csv_path) {
+            if metadata.len() == 0 {
+                add_header = true;
+            }
+        }
+        let mut file = std::fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(csv_path)
+            .unwrap();
+        if add_header {
+            let header = "session_id,role,question_type,team_size,role_pref,hpom_live,richard_cai,doc_string\n";
+            use std::io::Write;
+            file.write_all(header.as_bytes()).unwrap();
+        }
+        let row = format!(
+            "{},{},{},{},{},{},{},\"{}\"\n",
+            session_id,
+            role,
+            qtype,
+            team_size,
+            role_pref,
+            hpom_live,
+            richard_cai,
+            doc_string
+        );
+        use std::io::Write;
+        file.write_all(row.as_bytes()).unwrap();
+
         // Serve page 1 after session removal
         let html = load_page_html(9, &[]);
         return ("HTTP/1.1 200 OK".to_string(), html.into_bytes(), "text/html".to_string(), set_cookie);
