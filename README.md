@@ -1,5 +1,7 @@
 # HPOM Minigame: Low-Level HTTP Survey App
 
+Live site: https://hpom-minigame.fly.dev/
+
 This project is a low-level, manual HTTP website request handler written in Rust. It collects and stores user responses about SAP's HPOM architecture, using a custom session and button flow. The app is designed for educational/demo purposes and is hosted externally on Fly.io, leveraging persistent volumes for data storage.
 
 ## Features
@@ -7,12 +9,15 @@ This project is a low-level, manual HTTP website request handler written in Rust
 - Multi-page button-driven survey about HPOM roles and architecture
 - Session management via cookies
 - User responses are stored as CSV in a Fly.io volume (`/data/data.csv`)
+- Pretty HTML view of all collected data at [`/view-data`](https://hpom-minigame.fly.dev/view-data)
 - Designed for deployment on Fly.io with persistent storage
+- Limits the number of concurrent connections/threads to prevent server overload
 
 ## How It Works
 - Users interact with a series of HTML pages, making choices about HPOM roles and questions.
 - Each session's responses are summarized and written to `/data/data.csv` on the attached Fly.io volume (if present).
 - If the volume is not attached, the app logs a debug message and skips writing.
+- Visit `/view-data` to see all collected responses in a formatted table.
 
 ## Deployment
 1. **Create a Fly.io app and volume:**

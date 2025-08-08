@@ -1,3 +1,4 @@
+use std::sync::atomic::{AtomicUsize, Ordering};
 fn try_write_session_to_csv(
     session_id: &str,
     role: &str,
@@ -77,6 +78,8 @@ type Sessions = Arc<Mutex<HashMap<String, UserSession>>>;
 fn main() {
     // TODO figure out a way to log all information, fly.io volumes?
     let sessions: Sessions = Arc::new(Mutex::new(HashMap::new()));
+    const MAX_THREADS: usize = 64;
+    static THREAD_COUNT: AtomicUsize = AtomicUsize::new(0);
     // Use 0.0.0.0:8080 on Fly.io, otherwise use 127.0.0.1:7878
     let bind_addr = if std::env::var("FLY_APP_NAME").is_ok() {
         "0.0.0.0:8080"
@@ -86,10 +89,23 @@ fn main() {
     let listener = TcpListener::bind(bind_addr).unwrap();
     
     for stream in listener.incoming() {
-        let stream = stream.unwrap();
+        let stream = match stream {
+            Ok(s) => s,
+            Err(e) => {
+                eprintln!("[ERROR] Failed to accept connection: {}", e);
+                continue;
+            }
+        };
+        if THREAD_COUNT.load(Ordering::SeqCst) >= MAX_THREADS {
+            eprintln!("[WARN] Max concurrent connections reached ({}). Dropping connection.", MAX_THREADS);
+            // Optionally: stream.shutdown(Shutdown::Both).ok();
+            continue;
+        }
+        THREAD_COUNT.fetch_add(1, Ordering::SeqCst);
         let sessions = Arc::clone(&sessions);
         thread::spawn(move || {
             handle_connection(stream, sessions);
+            THREAD_COUNT.fetch_sub(1, Ordering::SeqCst);
         });
     }
 }
@@ -136,8 +152,53 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
         return ("HTTP/1.1 400 BAD REQUEST".to_string(), Vec::new(), "text/plain".to_string(), None);
     }
 
+    // Pretty CSV view endpoint
+    if parts[1].starts_with("/view-data") {
+        let csv_path = "/data/data.csv";
+        let html = match std::fs::read_to_string(csv_path) {
+            Ok(csv) => csv_to_html_table(&csv),
+            Err(_) => "<html><body><h2>CSV file not found or volume not attached.</h2></body></html>".to_string(),
+        };
+        return ("HTTP/1.1 200 OK".to_string(), html.into_bytes(), "text/html".to_string(), None);
+    }
+
     let url_parts: Vec<&str> = parts[1].split('?').collect();
     let query = if url_parts.len() > 1 { Some(url_parts[1]) } else { None };
+fn csv_to_html_table(csv: &str) -> String {
+    let mut lines = csv.lines();
+    let header = lines.next();
+    let mut html = String::from("<html><head><title>Survey Data</title><style>table{border-collapse:collapse;}th,td{border:1px solid #ccc;padding:6px;}th{background:#f0f0f0;}</style></head><body><h2>Survey Data</h2><table>");
+    if let Some(h) = header {
+        html.push_str("<tr>");
+        for col in h.split(',') {
+            html.push_str(&format!("<th>{}</th>", html_escape(col)));
+        }
+        html.push_str("</tr>");
+    }
+    for line in lines {
+        html.push_str("<tr>");
+        let mut in_quotes = false;
+        let mut cell = String::new();
+        for c in line.chars() {
+            match c {
+                '"' => in_quotes = !in_quotes,
+                ',' if !in_quotes => {
+                    html.push_str(&format!("<td>{}</td>", html_escape(&cell)));
+                    cell.clear();
+                },
+                _ => cell.push(c),
+            }
+        }
+        html.push_str(&format!("<td>{}</td>", html_escape(&cell)));
+        html.push_str("</tr>");
+    }
+    html.push_str("</table></body></html>");
+    html
+}
+
+fn html_escape(s: &str) -> String {
+    s.replace('&', "&amp;").replace('<', "&lt;").replace('>', "&gt;").replace('"', "&quot;")
+}
 
     // Extract session ID from cookie
     let session_id = extract_session_id(&request).unwrap_or_else(|| generate_session_id());
