@@ -143,7 +143,8 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
     // Remove session if user has reached page 9
     if remove_session {
         let user_session = sessions_guard.remove(&session_id).unwrap();
-        let _doc_string = UserSession::to_doc_string(user_session);
+        let doc_string = UserSession::to_doc_string(user_session);
+        println!("{doc_string}");
         // TODO implement docstring fly.io volume here
         // Serve page 1 after session removal
         let html = load_page_html(9, &[]);

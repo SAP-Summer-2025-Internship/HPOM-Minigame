@@ -17,33 +17,89 @@ impl UserSession {
     /// Consumes self and returns a pseudo-document string describing the user's flow
     pub fn to_doc_string(self) -> String {
         let mut doc = String::new();
-        doc.push_str("User Session Flow Summary:\n");
-        doc.push_str(&format!("Final page reached: {}\n", self.current_page));
-        if self.button_presses.is_empty() {
-            doc.push_str("No buttons were pressed.\n");
-        } else {
-            doc.push_str("Button presses in order:\n");
-            for (i, btn) in self.button_presses.iter().enumerate() {
-                doc.push_str(&format!("  {}. {}\n", i + 1, btn));
+        // Role selection (Page 2)
+        let role = self.button_presses.get(1).map(|s| match s.as_str() {
+            "pm" => "Product Manager",
+            "ux" => "UX Designer",
+            "engi" => "Engineer",
+            "dm" => "Deveveloper Manager",
+            _ => s.as_str(),
+        });
+
+        // Question type (Page 3)
+        let qtype = self.button_presses.get(2).map(|s| match s.as_str() {
+            "mc" => "Multiple Choice",
+            "tf" => "True/False",
+            _ => s.as_str(),
+        });
+
+        // Multiple Choice answers (Pages 4, 6)
+        let mut mc_answers = vec![];
+        if let Some(qtype) = qtype {
+            if qtype == "Multiple Choice" {
+                // Page 4
+                if let Some(ans) = self.button_presses.get(3) {
+                    let team_size = match ans.as_str() {
+                        "4a" => "3-5 people",
+                        "4b" => "6-8 people",
+                        "4c" => "9-12 people",
+                        "4d" => "13-15 people",
+                        _ => "(unknown)",
+                    };
+                    mc_answers.push(format!("Preferred team size: {team_size}"));
+                }
+                // Page 6
+                if let Some(ans) = self.button_presses.get(4) {
+                    let role_pref = match ans.as_str() {
+                        "6a" => "Product Manager",
+                        "6b" => "Developer Manager",
+                        "6c" => "Engineer",
+                        "6d" => "UX Designer",
+                        _ => "(unknown)",
+                    };
+                    mc_answers.push(format!("Wants to see more: {role_pref}"));
+                }
             }
         }
-        // Optionally, add a human-readable summary
-        doc.push_str("\nSummary:\n");
-        match self.button_presses.get(0).map(|s| s.as_str()) {
-            Some("start") => doc.push_str("- User started the flow.\n"),
-            _ => doc.push_str("- User did not start with the expected button.\n"),
+
+        // True/False answers (Pages 5, 7)
+        let mut tf_answers = vec![];
+        if let Some(qtype) = qtype {
+            if qtype == "True/False" {
+                // Page 5
+                if let Some(ans) = self.button_presses.get(3) {
+                    let resp = match ans.as_str() {
+                        "5t" => "True",
+                        "5f" => "False",
+                        _ => "(unknown)",
+                    };
+                    tf_answers.push(format!("Believes HPOM has been live for two years: {resp}"));
+                }
+                // Page 7
+                if let Some(ans) = self.button_presses.get(4) {
+                    let resp = match ans.as_str() {
+                        "7t" => "True",
+                        "7f" => "False",
+                        _ => "(unknown)",
+                    };
+                    tf_answers.push(format!("Not intimidated by Richard Cai: {resp}"));
+                }
+            }
         }
-        if let Some(role) = self.button_presses.get(1) {
-            doc.push_str(&format!("- Chose role: {}\n", role));
+
+        // Compose doc string
+        doc.push_str("User Response Summary:\n");
+        if let Some(role) = role {
+            doc.push_str(&format!("- Role: {}\n", role));
         }
-        if self.button_presses.contains(&"mc".to_string()) {
-            doc.push_str("- Took the multiple choice path.\n");
+        if let Some(qtype) = qtype {
+            doc.push_str(&format!("- Question type: {}\n", qtype));
         }
-        if self.button_presses.contains(&"tf".to_string()) {
-            doc.push_str("- Took the true/false path.\n");
+        for ans in mc_answers {
+            doc.push_str(&format!("- {}\n", ans));
         }
-        if self.current_page == 9 {
-            doc.push_str("- User completed the flow and reached the final page.\n");
+        for ans in tf_answers {
+            doc.push_str(&format!("- {}\n", ans));
         }
         doc
     }
