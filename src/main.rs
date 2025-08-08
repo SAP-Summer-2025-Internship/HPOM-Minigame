@@ -179,6 +179,17 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
 
     let url_parts: Vec<&str> = parts[1].split('?').collect();
     let query = if url_parts.len() > 1 { Some(url_parts[1]) } else { None };
+
+    // Only allow /, /pageN, /view-data, /clear-data, and static files
+    let allowed = parts[1] == "/"
+        || parts[1].starts_with("/page")
+        || parts[1].starts_with("/view-data")
+        || parts[1].starts_with("/clear-data")
+        || parts[1].starts_with("/lib/");
+    if !allowed {
+        let html = std::fs::read_to_string("404.html").unwrap_or_else(|_| "<html><body><h1>404 Not Found</h1></body></html>".to_string());
+        return ("HTTP/1.1 404 NOT FOUND".to_string(), html.into_bytes(), "text/html".to_string(), None);
+    }
 fn csv_to_html_table(csv: &str) -> String {
     let mut lines = csv.lines();
     let header = lines.next();
