@@ -200,7 +200,7 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
             }
         }
         let doc_string = UserSession::to_doc_string(user_session.clone()).replace('\n', "\\n").replace('"', "'");
-        let csv_path = "data/data.csv";
+        let csv_path = "/data/data.csv";
         let mut add_header = false;
         if !std::path::Path::new(csv_path).exists() {
             add_header = true;
