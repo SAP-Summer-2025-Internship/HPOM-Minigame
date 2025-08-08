@@ -23,17 +23,88 @@
             position: relative;
             width: 100vw;
             height: 100vh;
-            background-image: url('lib/7.png');
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center center;
-            transition: background-image 0.3s;
+            min-width: 320px;
+            min-height: 480px;
+            overflow: hidden;
+            background: #82adfe;
+        }
+        .bg-cropper {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100vw;
+            height: 100vh;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+        .bg-img {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100vw;
+            height: 100vh;
+            max-width: 1920px;
+            max-height: 1080px;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            z-index: 0;
+            user-select: none;
+            pointer-events: none;
+        }
+        @media (max-width: 1000px) {
+            .bg-cropper {
+                width: 1000px;
+                height: 1080px;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                max-width: 100vw;
+                max-height: 100vh;
+            }
+            .bg-img {
+                width: 1000px;
+                height: 1080px;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                object-fit: none;
+            }
+        }
+        @media (max-width: 1000px) and (max-width: 1000px) {
+            .bg-cropper {
+                width: 100vw;
+                height: calc(100vw * 1080 / 1000);
+            }
+            .bg-img {
+                width: calc(100vw * 1920 / 1000);
+                height: calc(100vw * 1080 / 1000);
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                object-fit: contain;
+            }
         }
         .scaling-btn {
             position: absolute;
-            width: 14.8vw;
-            height: 4vw;
             display: block;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 230px;
+            height: 60px;
+        }
+        /* Button positions for each button, relative to center */
+        .true-btn > .scaling-btn {
+            transform: translate(-110%, -50%);
+        }
+        .false-btn > .scaling-btn {
+            transform: translate(10%, -50%);
+        }
+        @media (max-width: 1000px) {
+            .scaling-btn {
+                width: 29vw;
+                height: 8vw;
+            }
         }
         /* Hover effect for TRUE button */
         a.true-btn:hover > img {
@@ -47,11 +118,14 @@
 </head>
 <body>
     <div class="bg-container">
-        <a href="/page8?button=7t" class="true-btn" style="display:block;">
-            <img src="lib/true.jpg" alt="TRUE" class="scaling-btn" style="cursor:pointer; left:34%; top:48%;" />
-        </a>
-        <a href="/page8?button=7f" class="false-btn" style="display:block;">
-            <img src="lib/false.jpg" alt="FALSE" class="scaling-btn" style="cursor:pointer; left:50%; top:48%;" />
-        </a>
+        <div class="bg-cropper">
+            <img src="lib/7.png" alt="Background" class="bg-img" draggable="false" />
+            <a href="/page8?button=7t" class="true-btn" style="display:block; z-index:1;">
+                <img src="lib/true.jpg" alt="TRUE" class="scaling-btn" style="cursor:pointer;" />
+            </a>
+            <a href="/page8?button=7f" class="false-btn" style="display:block; z-index:1;">
+                <img src="lib/false.jpg" alt="FALSE" class="scaling-btn" style="cursor:pointer;" />
+            </a>
+        </div>
     </div>
 </html>
