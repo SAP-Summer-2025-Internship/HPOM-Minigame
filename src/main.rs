@@ -152,6 +152,21 @@ fn handle_app_request(request: String, sessions: Sessions) -> (String, Vec<u8>, 
         return ("HTTP/1.1 400 BAD REQUEST".to_string(), Vec::new(), "text/plain".to_string(), None);
     }
 
+    // Endpoint to clear the CSV data
+    if parts[1].starts_with("/clear-data") {
+        let csv_path = "/data/data.csv";
+        let result = std::fs::OpenOptions::new()
+            .write(true)
+            .truncate(true)
+            .open(csv_path)
+            .and_then(|mut file| file.write_all(b"session_id,role,question_type,team_size,role_pref,hpom_live,richard_cai,doc_string\n"));
+        let html = match result {
+            Ok(_) => "<html><body><h2>CSV data cleared.</h2></body></html>".to_string(),
+            Err(_) => "<html><body><h2>Failed to clear CSV data (file not found or volume not attached).</h2></body></html>".to_string(),
+        };
+        return ("HTTP/1.1 200 OK".to_string(), html.into_bytes(), "text/html".to_string(), None);
+    }
+
     // Pretty CSV view endpoint
     if parts[1].starts_with("/view-data") {
         let csv_path = "/data/data.csv";
